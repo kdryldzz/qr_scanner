@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:qr_scanner/views/scanner_screen.dart';
+import 'package:go_router/go_router.dart';
 
-class ScannerTab extends StatefulWidget {
-  const ScannerTab({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<ScannerTab> createState() => _ScannerTabState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _ScannerTabState extends State<ScannerTab> with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
 
 
 
@@ -71,12 +71,7 @@ class _ScannerTabState extends State<ScannerTab> with SingleTickerProviderStateM
               ),
               child: ElevatedButton(
                 onPressed: () async {
-                  final result = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const ScannerScreen(),
-                    ),
-                  );
+                  final result = await context.push('/scanner-screen');
 
                   if (result != null) {
                     showDialog(
@@ -163,7 +158,7 @@ class _ScannerTabState extends State<ScannerTab> with SingleTickerProviderStateM
                     ),
                     const SizedBox(width: 12),
                     const Text(
-                      'QR Kodu Tara',
+                      'Scan',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,
@@ -177,7 +172,7 @@ class _ScannerTabState extends State<ScannerTab> with SingleTickerProviderStateM
             ),
             const SizedBox(height: 20),
             Text(
-              'QR kodu taramak için tıklayın',
+              'Click to scan a QR code',
               style: TextStyle(
                 color: Colors.white.withOpacity(0.7),
                 fontSize: 14,

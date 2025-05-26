@@ -12,7 +12,7 @@ class NavBar extends StatefulWidget {
 class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
-  late Animation<double> _fadeAnimation;
+
 
   @override
   void initState() {
@@ -23,10 +23,6 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
     );
 
     _scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
-    );
-
-    _fadeAnimation = Tween<double>(begin: 0.6, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
   }
@@ -47,8 +43,8 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Colors.blue.shade900.withOpacity(0.6),
-              const Color.fromARGB(255, 22, 4, 81).withOpacity(0.6),
+              Colors.blue.shade900.withOpacity(1.0),
+              const Color.fromARGB(255, 22, 4, 81).withOpacity(1.0),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -86,8 +82,7 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
               label: 'create',
               index: 1,
               isSelected: _calculateSelectedIndex(context) == 1,
-            ),
-            _buildNavItem(
+            ), _buildNavItem(
               icon: Icons.history,
               label: 'History',
               index: 2,
@@ -133,7 +128,7 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
                   child: Icon(
                     icon,
                     color: Colors.white.withOpacity(
-                      isSelected ? _fadeAnimation.value : 0.6,
+                      isSelected ? 1.0 : 0.6,
                     ),
                     size: 24,
                   ),
@@ -156,22 +151,22 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
       ),
     );
   }
-
   static int _calculateSelectedIndex(BuildContext context) {
     final String location = GoRouterState.of(context).matchedLocation;
-    if (location.startsWith('/scan')) return 0;
-    if (location.startsWith('/qr-generator')) return 1;
+    if (location.startsWith('/home-screen')) return 0;
+    if (location.startsWith('/generator-screen') || location.startsWith('/qr-generator')) return 1;
     if (location.startsWith('/history-screen')) return 2;
+    if (location.startsWith('/scanner-screen'))return 0;
     return 0;
   }
 
   void _onItemTapped(int index, BuildContext context) {
     switch (index) {
       case 0:
-        GoRouter.of(context).go('/scanner-screen');
+        GoRouter.of(context).go('/home-screen');
         break;
       case 1:
-        GoRouter.of(context).go('/qr-generator');
+        GoRouter.of(context).go('/generator-screen');
         break;
       case 2:
         GoRouter.of(context).go('/history-screen');

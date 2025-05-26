@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:go_router/go_router.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -50,7 +51,8 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Henüz QR kod bulunmuyor',
+                  'We don\'t have any history yet',
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.7),
                     fontSize: 16,
@@ -77,7 +79,11 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                   child: ListTile(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
-                    ),
+                    ),onTap: () {
+                      if (_tabController.index == 1) { // Sadece oluşturulan QR'lar için
+                        context.push('/qr-generator/${Uri.encodeComponent(item)}');
+                      }
+                    },
                     leading: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
@@ -114,43 +120,86 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                         ),
                         IconButton(
                           icon: const Icon(Icons.delete_outline, color: Colors.white),
-                          onPressed: () async {
-                            final confirmed = await showDialog<bool>(
+                          onPressed: () async {                            final confirmed = await showDialog<bool>(
                               context: context,
                               builder: (context) => AlertDialog(
-                                backgroundColor: Colors.white.withOpacity(0.95),
+                                backgroundColor: Colors.blue.shade900,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20),
-                                ),
-                                title: const Text(
-                                  'QR Kodu Sil',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black87,
+                                  side: BorderSide(
+                                    color: Colors.white.withOpacity(0.2),
+                                    width: 1,
                                   ),
                                 ),
-                                content: const Text(
-                                  'Bu QR kodu silmek istediğinize emin misiniz?',
-                                  style: TextStyle(color: Colors.black87),
+                                title: Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Icon(
+                                        Icons.delete_outline,
+                                        color: Colors.red.shade400,
+                                        size: 24,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    const Text(
+                                      'delete QR code',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                content: Container(
+                                  margin: const EdgeInsets.only(top: 8),
+                                  child: Text(
+                                    'Are you sure you want to delete this QR code?',
+                                    style: TextStyle(
+                                      color: Colors.white.withOpacity(0.9),
+                                    ),
+                                  ),
                                 ),
                                 actions: [
                                   TextButton(
-                                    onPressed: () => Navigator.pop(context, true),
+                                    onPressed: () => Navigator.pop(context, false),
+                                    style: TextButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                    ),
                                     child: Text(
-                                      'SİL',
+                                      'Cancel',
                                       style: TextStyle(
-                                        color: Colors.red.shade700,
+                                        color: Colors.white.withOpacity(0.7),
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(context, false),
-                                    child: Text(
-                                      'VAZGEÇ',
-                                      style: TextStyle(
-                                        color: Colors.blue.shade700,
-                                        fontWeight: FontWeight.bold,
+                                  Container(
+                                    margin: const EdgeInsets.only(left: 8, right: 8),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.red.shade400,
+                                          Colors.red.shade700,
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: TextButton(
+                                      onPressed: () => Navigator.pop(context, true),
+                                      style: TextButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                      ),
+                                      child: const Text(
+                                        'DELETE',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -176,7 +225,7 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
                               if (!mounted) return;
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: const Text('QR kod silindi'),
+                                  content: const Text('QR code deleted'),
                                   backgroundColor: Colors.red.shade900,
                                   behavior: SnackBarBehavior.floating,
                                 ),
@@ -221,11 +270,11 @@ class _HistoryScreenState extends State<HistoryScreen> with SingleTickerProvider
               tabs: const [
                 Tab(
                   icon: Icon(Icons.qr_code_scanner, size: 20),
-                  text: 'Tarananlar',
+                  text: 'Scanned',
                 ),
                 Tab(
                   icon: Icon(Icons.qr_code, size: 20),
-                  text: 'Oluşturulanlar',
+                  text: 'Generated',
                   
                 ),
               ],
